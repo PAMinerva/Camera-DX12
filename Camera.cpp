@@ -331,6 +331,7 @@ void ThirdPersonCamera::Strafe(float d)
 void ThirdPersonCamera::SetTarget3f(XMFLOAT3 targetPos)
 {
 	mTarget = targetPos;
+	mViewDirty = true;
 }
 
 XMFLOAT3 ThirdPersonCamera::GetTarget3f()
@@ -345,24 +346,27 @@ XMVECTOR ThirdPersonCamera::GetTarget() const
 
 void ThirdPersonCamera::UpdateViewMatrix()
 {
-	// Converte da coordinate sferiche a coordinate cartesiane.
-	// Assi invertiti
-	//float x = mRadius * sinf(mPhi) * cosf(mTheta);
-	//float z = mRadius * sinf(mPhi) * sinf(mTheta);
-	//float y = mRadius * cosf(mPhi);
+	if (mViewDirty)
+	{
+		// Converte da coordinate sferiche a coordinate cartesiane.
+		// Assi invertiti
+		//float x = mRadius * sinf(mPhi) * cosf(mTheta);
+		//float z = mRadius * sinf(mPhi) * sinf(mTheta);
+		//float y = mRadius * cosf(mPhi);
 
-	// Converte da coordinate sferiche a coordinate cartesiane.
-	float x = mRadius * cosf(mPhi) * sinf(mTheta);
-	float z = mRadius * cosf(mPhi) * cosf(mTheta);
-	float y = mRadius * sinf(mPhi);
+		// Converte da coordinate sferiche a coordinate cartesiane.
+		float x = mRadius * cosf(mPhi) * sinf(mTheta);
+		float z = mRadius * cosf(mPhi) * cosf(mTheta);
+		float y = mRadius * sinf(mPhi);
 
-	mPosition = {mTarget.x + x, mTarget.y + y, mTarget.z + z };
+		mPosition = { mTarget.x + x, mTarget.y + y, mTarget.z + z };
 
-	XMStoreFloat4x4(&mView, XMMatrixLookAtLH(XMLoadFloat3(&mPosition), XMLoadFloat3(&mTarget), g_XMIdentityR1));
+		XMStoreFloat4x4(&mView, XMMatrixLookAtLH(XMLoadFloat3(&mPosition), XMLoadFloat3(&mTarget), g_XMIdentityR1));
 
-	XMStoreFloat3(&mRight, XMVector3Normalize({ mView._11, mView._21, mView._31 }));
-	XMStoreFloat3(&mLook, XMVector3Normalize({ mView._13, mView._23, mView._33 }));
-	XMStoreFloat3(&mUp, XMVector3Normalize(XMVector3Cross(XMLoadFloat3(&mLook), XMLoadFloat3(&mRight))));
+		XMStoreFloat3(&mRight, XMVector3Normalize({ mView._11, mView._21, mView._31 }));
+		XMStoreFloat3(&mLook, XMVector3Normalize({ mView._13, mView._23, mView._33 }));
+		XMStoreFloat3(&mUp, XMVector3Normalize(XMVector3Cross(XMLoadFloat3(&mLook), XMLoadFloat3(&mRight))));
 
-	mViewDirty = false;
+		mViewDirty = false;
+	}
 }

@@ -344,6 +344,11 @@ void CameraApp::OnMouseMove(WPARAM btnState, int x, int y)
 		}
 	}
 
+	if (mUseFpsCamera)
+		mFpsCam->UpdateViewMatrix();
+	else
+		mTpsCam->UpdateViewMatrix();
+
 	mLastMousePos.x = x;
 	mLastMousePos.y = y;
 }
@@ -351,6 +356,12 @@ void CameraApp::OnMouseMove(WPARAM btnState, int x, int y)
 void CameraApp::OnKeyboardInput(const GameTimer& gt)
 {
 	const float dt = gt.DeltaTime();
+
+	if (GetAsyncKeyState('1') & 0x8000)
+		mUseFpsCamera = true;
+
+	if (GetAsyncKeyState('3') & 0x8000)
+		mUseFpsCamera = false;
 
 	if (GetAsyncKeyState('W') & 0x8000)
 		if (mUseFpsCamera)
@@ -389,12 +400,6 @@ void CameraApp::OnKeyboardInput(const GameTimer& gt)
 
 	XMStoreFloat4x4(&mAllRitems[0]->World, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(adjustedPos.x, 1.0f, adjustedPos.z));
 	mAllRitems[0]->NumFramesDirty = gNumFrameResources;
-
-	if (GetAsyncKeyState('1') & 0x8000)
-		mUseFpsCamera = true;
-
-	if (GetAsyncKeyState('3') & 0x8000)
-		mUseFpsCamera = false;
 
 	if (mUseFpsCamera)
 		mFpsCam->UpdateViewMatrix();
