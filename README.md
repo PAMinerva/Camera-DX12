@@ -1,5 +1,5 @@
 # Camera-DX12
-DirectX 12 project that extend Frank Luna's Camera demo by implementing a simple third person camera.
+DirectX 12 project that extend Frank Luna's Camera demo by implementing a simple third person camera. <br />
 For the sake of semplicity collision detection has not been taken into account.
 
 <br /><br />
