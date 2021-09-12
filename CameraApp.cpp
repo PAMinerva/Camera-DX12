@@ -115,6 +115,8 @@ private:
 	// List of all the render items.
 	std::vector<std::unique_ptr<RenderItem>> mAllRitems;
 
+	RenderItem* mBoxRItem;
+
 	// Render items divided by PSO.
 	std::vector<RenderItem*> mOpaqueRitems;
 
@@ -398,8 +400,8 @@ void CameraApp::OnKeyboardInput(const GameTimer& gt)
 	mFpsCam->SetPosition(adjustedPos.x, adjustedPos.y, adjustedPos.z);
 	mTpsCam->SetTarget3f(adjustedPos);
 
-	XMStoreFloat4x4(&mAllRitems[0]->World, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(adjustedPos.x, 1.0f, adjustedPos.z));
-	mAllRitems[0]->NumFramesDirty = gNumFrameResources;
+	XMStoreFloat4x4(&mBoxRItem->World, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(adjustedPos.x, 1.0f, adjustedPos.z));
+	mBoxRItem->NumFramesDirty = gNumFrameResources;
 
 	if (mUseFpsCamera)
 		mFpsCam->UpdateViewMatrix();
@@ -926,6 +928,7 @@ void CameraApp::BuildRenderItems()
 	boxRitem->IndexCount = boxRitem->Geo->DrawArgs["box"].IndexCount;
 	boxRitem->StartIndexLocation = boxRitem->Geo->DrawArgs["box"].StartIndexLocation;
 	boxRitem->BaseVertexLocation = boxRitem->Geo->DrawArgs["box"].BaseVertexLocation;
+	mBoxRItem = boxRitem.get();
 	mAllRitems.push_back(std::move(boxRitem));
 
 	auto gridRitem = std::make_unique<RenderItem>();
