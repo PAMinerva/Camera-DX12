@@ -5,6 +5,7 @@ For the sake of semplicity collision detection has not been taken into account. 
 LEFT MOUSE:    Pitch/Yaw <br />
 RIGHT MOUSE:   Zoom <br />
 W / A / S / D: Move <br />
+1 / 3:         Switch from 1st to 3rd person camera
 
 <br /><br />
 
