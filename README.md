@@ -2,9 +2,9 @@
 DirectX 12 project that extends Frank Luna's Camera demo by implementing a simple third person camera. <br />
 For the sake of semplicity collision detection has not been taken into account. <br /> <br />
 
-LEFT MOUSE:    Pitch/Yaw
-RIGHT MOUSE:   Zoom
-W / A / S / D: Move
+LEFT MOUSE:    Pitch/Yaw <br />
+RIGHT MOUSE:   Zoom <br />
+W / A / S / D: Move <br />
 
 <br /><br />
 
