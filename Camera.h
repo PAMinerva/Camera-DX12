@@ -102,17 +102,26 @@ class FirstPersonCamera : public Camera
 class ThirdPersonCamera : public Camera
 {
 public:
+
+	// 3rd person camera needs to set its own class members during initialization of camera space.
 	void LookAt(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& target, const DirectX::XMFLOAT3& up);
 
+	// Transformations work differently in a 3rd person camera.
 	void Pitch(float angle);
 	void RotateY(float angle);
 	void Walk(float d);
 	void Strafe(float d);
 
+	// Set/Get target.
 	void SetTarget3f(DirectX::XMFLOAT3 targetPos);
 	DirectX::XMFLOAT3 GetTarget3f();
 	DirectX::XMVECTOR GetTarget() const;
 
+	// Get Target and add a value to it.
+	float GetRadius();
+	void AddToRadius(float d);
+
+	// Building the View matrix works differently from the base class.
 	void UpdateViewMatrix();
 
 private:

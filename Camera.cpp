@@ -89,12 +89,17 @@ float Camera::GetFovY()const
 
 float Camera::GetFovX()const
 {
+	// tan(fov/2) = (w/2) / d
+	// fov = 2 * atan((w/2) / d)
 	float halfWidth = 0.5f * GetNearWindowWidth();
 	return 2.0f * atan(halfWidth / mNearZ);
 }
 
 float Camera::GetNearWindowWidth()const
 {
+	// aspetc ratio r di area client è la stessa in near e far (per salvaguardare proporzioni).
+	// r = w / h
+	// w = r * h
 	return mAspect * mNearWindowHeight;
 }
 
@@ -115,15 +120,21 @@ float Camera::GetFarWindowHeight()const
 
 void Camera::SetLens(float fovY, float aspect, float zn, float zf)
 {
-	// cache properties
+	// Imposta le proprietà del frustum
 	mFovY = fovY;
 	mAspect = aspect;
 	mNearZ = zn;
 	mFarZ = zf;
 
+	// tan(fov/2) = (h/2)/d 
+	// (con h altezza e d distanza di piani near e far)
+	// (fov angolo tra lati contrapposti del frustum)
+	// Quindi:
+	// h = 2 * d * tan(fov/2)
 	mNearWindowHeight = 2.0f * mNearZ * tanf(0.5f * mFovY);
 	mFarWindowHeight = 2.0f * mFarZ * tanf(0.5f * mFovY);
 
+	// Calcola matrice di proiezione e la salva.
 	XMMATRIX P = XMMatrixPerspectiveFovLH(mFovY, mAspect, mNearZ, mFarZ);
 	XMStoreFloat4x4(&mProj, P);
 }
@@ -135,9 +146,9 @@ void Camera::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
 	XMVECTOR U = XMVector3Cross(L, R);
 
 	XMStoreFloat3(&mPosition, pos);
-	XMStoreFloat3(&mLook, L);
-	XMStoreFloat3(&mRight, R);
-	XMStoreFloat3(&mUp, U);
+	XMStoreFloat3(&mLook, L);        // mLook  = L = target - pos
+	XMStoreFloat3(&mRight, R);       // mRight = R = worldUp  x L
+	XMStoreFloat3(&mUp, U);          // mUp    = U = L x R
 
 	mViewDirty = true;
 }
@@ -182,7 +193,7 @@ void Camera::Strafe(float d)
 	XMVECTOR s = XMVectorReplicate(d);
 	XMVECTOR r = XMLoadFloat3(&mRight);
 	XMVECTOR p = XMLoadFloat3(&mPosition);
-	XMStoreFloat3(&mPosition, XMVectorMultiplyAdd(s, r, p));
+	XMStoreFloat3(&mPosition, XMVectorMultiplyAdd(s, r, p));  // s * r + p
 
 	mViewDirty = true;
 }
@@ -193,14 +204,14 @@ void Camera::Walk(float d)
 	XMVECTOR s = XMVectorReplicate(d);
 	XMVECTOR l = XMLoadFloat3(&mLook);
 	XMVECTOR p = XMLoadFloat3(&mPosition);
-	XMStoreFloat3(&mPosition, XMVectorMultiplyAdd(s, l, p));
+	XMStoreFloat3(&mPosition, XMVectorMultiplyAdd(s, l, p));  // s * l + p
 
 	mViewDirty = true;
 }
 
 void Camera::Pitch(float angle)
 {
-	// Rotate up and look vector about the right vector.
+	// Ruota up e look rispetto a right.
 
 	XMMATRIX R = XMMatrixRotationAxis(XMLoadFloat3(&mRight), angle);
 
@@ -212,7 +223,7 @@ void Camera::Pitch(float angle)
 
 void Camera::RotateY(float angle)
 {
-	// Rotate the basis vectors about the world y-axis.
+	// Ruota up, look e right rispetto all'asse delle Y dello spazio world.
 
 	XMMATRIX R = XMMatrixRotationY(angle);
 
@@ -232,14 +243,18 @@ void Camera::UpdateViewMatrix()
 		XMVECTOR L = XMLoadFloat3(&mLook);
 		XMVECTOR P = XMLoadFloat3(&mPosition);
 
-		// Keep camera's axes orthogonal to each other and of unit length.
+		// Riortogonalizza e normalizza gli assi del sistema della camera.
+		// Necessario perché i piccoli errori di precisione che si hanno
+		// inevitabilmente durante i calcoli effettuati su tali assi possono 
+		// comprometterne, alla lunga, lunghezza ed ortogonalità.
 		L = XMVector3Normalize(L);
 		U = XMVector3Normalize(XMVector3Cross(L, R));
 
-		// U, L already ortho-normal, so no need to normalize cross product.
+		// U ed L già orto-normali quindi non c'è necessità di normalizzare
+		// il prodotto vettoriale.
 		R = XMVector3Cross(U, L);
 
-		// Fill in the view matrix entries.
+		// Riempe gli elementi della matrice view.
 		float x = -XMVectorGetX(XMVector3Dot(P, R));
 		float y = -XMVectorGetX(XMVector3Dot(P, U));
 		float z = -XMVectorGetX(XMVector3Dot(P, L));
@@ -284,14 +299,18 @@ void ThirdPersonCamera::LookAt(const DirectX::XMFLOAT3& pos, const DirectX::XMFL
 
 	mPosition = pos;
 	mTarget = target;
-	XMVECTOR length = XMVector3Length(XMVectorSubtract(XMLoadFloat3(&target), XMLoadFloat3(&pos)));
-	mRadius = length.m128_f32[0];
+	//XMVECTOR length = XMVector3Length(XMVectorSubtract(XMLoadFloat3(&target), XMLoadFloat3(&pos)));
+	//mRadius = length.m128_f32[0];
+	XMFLOAT3 length;
+	XMStoreFloat3(&length, XMVector3Length(XMVectorSubtract(XMLoadFloat3(&target), XMLoadFloat3(&pos))));
+	mRadius = length.x;
 
 	mViewDirty = true;
 }
 
 void ThirdPersonCamera::Pitch(float angle)
 {
+	//  0° < mPhi < 90°
 	mPhi += angle;
 	mPhi = MathHelper::Clamp(mPhi, 0.05f, XM_PI / 2.0f - 0.01f);
 
@@ -300,8 +319,9 @@ void ThirdPersonCamera::Pitch(float angle)
 
 void ThirdPersonCamera::RotateY(float angle)
 {
+	//  mTheta sempre in [0°, 360°)
+	// mTheta = (mTheta + angle) % (MathF.PI * 2.0f);
 	mTheta = XMScalarModAngle(mTheta + angle);
-	// _alpha = (_alpha + angle) % (MathF.PI*2.0f);
 
 	mViewDirty = true;
 }
@@ -310,9 +330,9 @@ void ThirdPersonCamera::Walk(float d)
 {
 	// mTarget += d*mLook
 	XMVECTOR s = XMVectorReplicate(d);
-	XMVECTOR l = {mLook.x, 0, mLook.z};
+	XMVECTOR l = { mLook.x, 0, mLook.z }; // proiez. ortog. di look su piano XZ
 	XMVECTOR t = XMLoadFloat3(&mTarget);
-	XMStoreFloat3(&mTarget, XMVectorMultiplyAdd(s, l, t)); // t += s * l
+	XMStoreFloat3(&mTarget, XMVectorMultiplyAdd(s, l, t)); // s * l + t
 
 	mViewDirty = true;
 }
@@ -321,9 +341,9 @@ void ThirdPersonCamera::Strafe(float d)
 {
 	// mTarget += d*mRight
 	XMVECTOR s = XMVectorReplicate(d);
-	XMVECTOR r = { mRight.x, 0, mRight.z };
+	XMVECTOR r = { mRight.x, 0, mRight.z };  // proiez. ortog. di right su piano XZ
 	XMVECTOR t = XMLoadFloat3(&mTarget);
-	XMStoreFloat3(&mTarget, XMVectorMultiplyAdd(s, r, t)); // t += s * r
+	XMStoreFloat3(&mTarget, XMVectorMultiplyAdd(s, r, t)); // s * r + t
 
 	mViewDirty = true;
 }
@@ -331,6 +351,7 @@ void ThirdPersonCamera::Strafe(float d)
 void ThirdPersonCamera::SetTarget3f(XMFLOAT3 targetPos)
 {
 	mTarget = targetPos;
+
 	mViewDirty = true;
 }
 
@@ -342,6 +363,19 @@ XMFLOAT3 ThirdPersonCamera::GetTarget3f()
 XMVECTOR ThirdPersonCamera::GetTarget() const
 {
 	return XMLoadFloat3(&mTarget);
+}
+
+void ThirdPersonCamera::AddToRadius(float d)
+{
+	mRadius += d;
+	mRadius = MathHelper::Clamp(mRadius, 5.0f, 25.0f);
+
+	mViewDirty = true;
+}
+
+float ThirdPersonCamera::GetRadius()
+{
+	return mRadius;
 }
 
 void ThirdPersonCamera::UpdateViewMatrix()

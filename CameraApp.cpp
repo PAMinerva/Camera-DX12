@@ -124,7 +124,7 @@ private:
 
 	//Camera mCamera;
 	std::unique_ptr<FirstPersonCamera> mFpsCam;
-	std::unique_ptr <ThirdPersonCamera> mTpsCam;
+	std::unique_ptr<ThirdPersonCamera> mTpsCam;
 	BOOL mUseFpsCamera;
 
 	POINT mLastMousePos;
@@ -179,10 +179,11 @@ bool CameraApp::Initialize()
 	mFpsCam = std::make_unique<FirstPersonCamera>();
 	mTpsCam = std::make_unique<ThirdPersonCamera>();
 
-	// Alza un po' e arretra così vede origine di world.
+	// Alza un po' la camera ed imposta le proprietà del frustum.
 	mFpsCam->SetPosition(0.0f, 2.0f, 0.0f);
 	mFpsCam->SetLens(0.25f * MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
 
+	// Imposta le proprietà del sistema della camera e del frustum.
 	mTpsCam->LookAt(XMFLOAT3{ 0.0f, 2.0f, -15.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f });
 	mTpsCam->SetLens(0.25f * MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
 
@@ -330,7 +331,7 @@ void CameraApp::OnMouseMove(WPARAM btnState, int x, int y)
 {
 	if ((btnState & MK_LBUTTON) != 0)
 	{
-		// Make each pixel correspond to a quarter of a degree.
+		// Ogni pixel corrisponde ad 1/4 di grado.
 		float dx = XMConvertToRadians(0.25f * static_cast<float>(x - mLastMousePos.x));
 		float dy = XMConvertToRadians(0.25f * static_cast<float>(y - mLastMousePos.y));
 
@@ -344,6 +345,15 @@ void CameraApp::OnMouseMove(WPARAM btnState, int x, int y)
 			mTpsCam->Pitch(dy);
 			mTpsCam->RotateY(dx);
 		}
+	}
+	else if ((btnState & MK_RBUTTON) != 0)
+	{
+		// Ogni pixel corrisponde a 0.03 unità nello spazio World.
+		float dx = 0.03f * static_cast<float>(x - mLastMousePos.x);
+		float dy = 0.03f * static_cast<float>(y - mLastMousePos.y);
+
+		// Aggiorna raggio così camera può avvicinarsi o allontanarsi dal target.
+		mTpsCam->AddToRadius(dx - dy);
 	}
 
 	if (mUseFpsCamera)
@@ -391,16 +401,26 @@ void CameraApp::OnKeyboardInput(const GameTimer& gt)
 
 	XMFLOAT3 adjustedPos;
 
-	// Mantiene la camera in I persona nella stessa posione della box, che resta attaccata al pavimento.
+	// Mantiene camera/target attaccato al pavimento.
 	if (mUseFpsCamera)
-		XMStoreFloat3(&adjustedPos, XMVectorClamp(mFpsCam->GetPosition(), XMVectorSet(-8.9f, 2.0f, -13.9f, 0.0f), XMVectorSet(8.9f, 2.0f, 13.9f, 0.0f)));
+		XMStoreFloat3(&adjustedPos,
+			XMVectorClamp(mFpsCam->GetPosition(),
+				XMVectorSet(-8.9f, 2.0f, -13.9f, 0.0f),
+				XMVectorSet(8.9f, 2.0f, 13.9f, 0.0f)));
 	else
-		XMStoreFloat3(&adjustedPos, XMVectorClamp(mTpsCam->GetTarget(), XMVectorSet(-8.9f, 1.0f, -13.9f, 0.0f), XMVectorSet(8.9f, 1.0f, 13.9f, 0.0f)));
+		XMStoreFloat3(&adjustedPos,
+			XMVectorClamp(mTpsCam->GetTarget(),
+				XMVectorSet(-8.9f, 1.0f, -13.9f, 0.0f),
+				XMVectorSet(8.9f, 1.0f, 13.9f, 0.0f)));
 
+	// Aggiorna, nella classe della camera, la posizione di camera/target a quella della box.
 	mFpsCam->SetPosition(adjustedPos.x, adjustedPos.y, adjustedPos.z);
 	mTpsCam->SetTarget3f(adjustedPos);
 
-	XMStoreFloat4x4(&mBoxRItem->World, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(adjustedPos.x, 1.0f, adjustedPos.z));
+	// Aggiorna la posizione della box nel relativo RenderItem.
+	XMStoreFloat4x4(
+		&mBoxRItem->World,
+		XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(adjustedPos.x, 1.0f, adjustedPos.z));
 	mBoxRItem->NumFramesDirty = gNumFrameResources;
 
 	if (mUseFpsCamera)
@@ -1037,10 +1057,10 @@ void CameraApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::v
 		D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + ri->ObjCBIndex * objCBByteSize;
 		D3D12_GPU_VIRTUAL_ADDRESS matCBAddress = matCB->GetGPUVirtualAddress() + ri->Mat->MatCBIndex * matCBByteSize;
 
-		 //CD3DX12_GPU_DESCRIPTOR_HANDLE tex(mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
-		 //tex.Offset(ri->Mat->DiffuseSrvHeapIndex, mCbvSrvDescriptorSize);
+		//CD3DX12_GPU_DESCRIPTOR_HANDLE tex(mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+		//tex.Offset(ri->Mat->DiffuseSrvHeapIndex, mCbvSrvDescriptorSize);
 
-		//cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
+	   //cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
 		cmdList->SetGraphicsRootConstantBufferView(1, objCBAddress);
 		cmdList->SetGraphicsRootConstantBufferView(3, matCBAddress);
 
