@@ -3,9 +3,9 @@ DirectX 12 project that extends Frank Luna's Camera demo by implementing a simpl
 For the sake of semplicity collision detection has not been taken into account. <br /> <br />
 
 * LEFT MOUSE: &ensp;&ensp;&ensp;&ensp;Pitch/Yaw <br />
-* RIGHT MOUSE: &ensp;&ensp;Zoom <br />
-* W / A / S / D: &ensp;&ensp;&ensp;&ensp;Move <br />
-* 1 / 3: &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;Switch camera
+* RIGHT MOUSE: &ensp;&ensp; Zoom <br />
+* W / A / S / D: &ensp;&ensp;&ensp;&ensp; Move <br />
+* 1 / 3: &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; Switch camera
 
 <br /><br />
 
