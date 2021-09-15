@@ -5,7 +5,7 @@ For the sake of semplicity collision detection has not been taken into account. 
 * LEFT MOUSE: &ensp;&ensp;&ensp;&ensp;Pitch/Yaw <br />
 * RIGHT MOUSE: &ensp;&ensp; Zoom <br />
 * W / A / S / D: &ensp;&ensp;&ensp;&ensp;Move <br />
-* 1 / 3: &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; Switch camera
+* 1 / 3: &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;Switch camera
 
 <br /><br />
 
