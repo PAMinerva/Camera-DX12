@@ -2,7 +2,7 @@
 DirectX 12 project that extends Frank Luna's Camera demo by implementing a simple third person camera. <br />
 For the sake of semplicity collision detection has not been taken into account. <br />
 
-Blog post: [Camera in prima e terza persona](https://paminerva.blogspot.com/2021/09/12-camera-in-prima-e-terza-persona.html?target=_blank) <br /> <br />
+Blog post: [Camera in prima e terza persona](https://paminerva.blogspot.com/2021/09/12-camera-in-prima-e-terza-persona.html/?target=_blank) <br /> <br />
 
 * LEFT MOUSE: &ensp;&ensp;&ensp;&nbsp;&nbsp;Pitch/Yaw <br />
 * RIGHT MOUSE: &ensp;&ensp; Zoom <br />
