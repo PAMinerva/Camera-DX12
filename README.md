@@ -5,13 +5,11 @@ For the sake of semplicity collision detection has not been taken into account. 
 * LEFT MOUSE: &ensp;&ensp;&ensp;&nbsp;&nbsp;Pitch/Yaw <br />
 * RIGHT MOUSE: &ensp;&ensp; Zoom <br />
 * W / A / S / D: &ensp;&ensp;&ensp;&ensp; Move <br />
-* 1 / 3: &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; Switch camera
+* 1 / 3: &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; Switch camera <br /><br />
 
-<br /><br />
+![](images/camera.gif) <br /><br />
 
-![](images/camera.gif)
-
-<br /><br /><br />
+This repository host the code for the following blog post: [Camera in prima e terza persona](https://paminerva.blogspot.com/2021/09/12-camera-in-prima-e-terza-persona.html) <br />
 
 Credits: <br />
 [1] https://github.com/d3dcoder/d3d12book <br />
