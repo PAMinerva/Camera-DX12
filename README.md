@@ -9,7 +9,7 @@ For the sake of semplicity collision detection has not been taken into account. 
 
 ![](images/camera.gif) <br /><br />
 
-This repository host the code for the following blog post: [Camera in prima e terza persona](https://paminerva.blogspot.com/2021/09/12-camera-in-prima-e-terza-persona.html) <br />
+Blog post: [Camera in prima e terza persona](https://paminerva.blogspot.com/2021/09/12-camera-in-prima-e-terza-persona.html) <br />
 
 Credits: <br />
 [1] https://github.com/d3dcoder/d3d12book <br />
