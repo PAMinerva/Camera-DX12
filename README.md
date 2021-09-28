@@ -4,10 +4,10 @@ For the sake of semplicity collision detection has not been taken into account. 
 
 Blog post: [Camera in prima e terza persona](https://paminerva.blogspot.com/2021/09/12-camera-in-prima-e-terza-persona.html) <br /> <br />
 
-* LEFT MOUSE: &ensp;&ensp;&ensp;&nbsp;&nbsp;Pitch/Yaw <br />
-* RIGHT MOUSE: &ensp;&ensp; Zoom <br />
-* W / A / S / D: &ensp;&ensp;&ensp;&ensp; Move <br />
-* 1 / 3: &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; Switch camera <br /><br />
+* `MK_LBUTTON`: &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&nbsp;&nbsp; Pitch/Yaw <br />
+* `MK_RBUTTON`: &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; Zoom <br />
+* `W` / `A` / `S` / `D`: &ensp;&ensp;&ensp; Move <br />
+* `1` / `3`: &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; Switch camera <br /><br />
 
 ![](images/camera.gif) <br /><br />
 
