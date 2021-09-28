@@ -1,9 +1,11 @@
 # Camera-DX12
+### Description
 DirectX 12 project that extends Frank Luna's Camera demo by implementing a simple third person camera. <br />
 For the sake of semplicity collision detection has not been taken into account. <br />
 
 Blog post: [Camera in prima e terza persona](https://paminerva.blogspot.com/2021/09/12-camera-in-prima-e-terza-persona.html) <br /> <br />
 
+### Controls
 * `MK_LBUTTON`: &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&nbsp;&nbsp; Pitch/Yaw <br />
 * `MK_RBUTTON`: &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; Zoom <br />
 * `W` / `A` / `S` / `D`: &ensp;&ensp;&ensp; Move <br />
@@ -11,7 +13,7 @@ Blog post: [Camera in prima e terza persona](https://paminerva.blogspot.com/2021
 
 ![](images/camera.gif) <br /><br />
 
-Credits: <br />
-[1] https://github.com/d3dcoder/d3d12book <br />
-[2] https://github.com/ericrrichards/dx11 <br />
-[3] https://github.com/MKXJun/DirectX11-With-Windows-SDK
+### Credits <br />
+* https://github.com/d3dcoder/d3d12book <br />
+* https://github.com/ericrrichards/dx11 <br />
+*  https://github.com/MKXJun/DirectX11-With-Windows-SDK
